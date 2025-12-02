@@ -1,0 +1,9 @@
+gfortran  -O4 -w    -c modules/External/intreal_types.f90 -o modules/External/intreal_types.o
+gfortran  -O4 -w    -c modules/GlobalVariables/cosmoparams.f90 -o modules/GlobalVariables/cosmoparams.o
+gfortran  -O4 -w    -c modules/GlobalVariables/input_parameters.f90 -o modules/GlobalVariables/input_parameters.o
+gfortran  -O4 -w    -c modules/GlobalVariables/params.f90 -o modules/GlobalVariables/params.o
+gfortran  -O4 -w    -c cosmology/Dlin_params.f90 -o cosmology/Dlin_params.o
+gfortran  -O4 -w    -c cosmology/psubs_Dlinear.f90 -o cosmology/psubs_Dlinear.o
+gfortran  -O4 -w    -c modules/Solvers/Solvers.f90 -o modules/Solvers/Solvers.o
+gfortran  -O4 -w    -c modules/HomogeneousEllipsoid/HomogeneousEllipsoid.f90 -o modules/HomogeneousEllipsoid/HomogeneousEllipsoid.o
+gfortran  -O4 -w    ./modules/External/intreal_types.o ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/input_parameters.o ./modules/GlobalVariables/params.o ./cosmology/Dlin_params.o ./cosmology/psubs_Dlinear.o ./modules/Solvers/Solvers.o ./modules/HomogeneousEllipsoid/HomogeneousEllipsoid.o -o ../bin/HomogeneousEllipsoid

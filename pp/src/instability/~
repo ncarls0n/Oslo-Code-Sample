@@ -1,0 +1,187 @@
+! evolve_pert.f90
+
+! Program to loop over k and set the correlation matrix.
+
+! to do: the setting an initial estimate for g is probably redundant in most cases.
+! n.b. make sure not to set pert ICs when k^2 + a^2m^2 < 0
+
+program evolve_pert
+#include "macros.h"
+#include "gl_macros.h"
+  use params
+  use gl_integrator
+  use newton_root
+  use eom_bg_cosmic
+  use eom_pert_cosmic
+  use corr_cosmic
+  
+  implicit none
+
+  integer :: i,j                          ! loop indicies
+  
+  integer, parameter :: nstep = 2**20     ! maximum number of steps
+  integer, parameter :: stepadapt = 2**0  ! number of steps between adapting dt
+  real(dl) :: dt0 = 1._dl/dble(2**4)      ! base time step
+  real(dl) :: dt                          ! adapted time step
+  real(dl) :: t                           ! time
+  integer, parameter :: nk = 306          ! number of k modes
+  real(dl), parameter :: dk = 1e-1        ! fundamental k mode
+  real(dl) :: k2                          ! square wavenumber
+  real(dl), parameter :: h_fac = 4._dl    ! number of efolds before horizon crossing to initialize a mode 
+  
+  character(len=*), parameter :: f_out = 'corr.out'  ! file name for ouput
+  integer, parameter :: n_file = 99
+  
+  real(dl), dimension(2,SYS_DIM_PERT,nu_gl) :: g = 0._dl ! Gauss-Legendre g vector
+  real(dl), dimension(SYS_DIM_PERT) :: y                 ! odds are q, evens are dq
+  real(dl), dimension(SYS_DIM_PERT) :: z                 ! temp state of system
+
+  real(dl), dimension(2*nfld,2*nfld) :: corr             ! correlation matrix
+  
+  real(dl), parameter, dimension(SYS_DIM_BG) :: y_0 = (/0._dl,0._dl,11._dl,0._dl,-0.8129_dl,0._dl/)  ! ICs of y
+  real(dl), parameter :: phi_init = 8.625_dl, phi_fin = 8.37406_dl
+  real(dl), parameter :: alpha_init = 0._dl, alpha_fin = 0._dl
+  real(dl), dimension(SYS_DIM_BG) :: y_init
+  
+  real(dl) :: start_time, end_time
+
+  call init_output(n_file)
+  
+  ! Set background initial conditions
+  t = 0._dl
+  y(:) = 0._dl
+  y(SYS_BG_I) = y_0(:)
+  call set_hub_cosm(y)
+  call adapt_dt(y, 0._dl)
+  call gl_solve_g(y(SYS_BG_I), deriv_bg_cosm, z(SYS_BG_I), g(:,SYS_BG_I,:), dt, SYS_DIM_BG, eps_0, c_max_0)
+  ! Evolve background onto attractor at start of lat
+  do j=1,nstep
+     call gl_integrate(y(SYS_BG_I), deriv_bg_cosm, z(SYS_BG_I), g(:,SYS_BG_I,:), dt, SYS_DIM_BG, eps_0, c_max_0)
+     if (y(3) .lt. phi_init) exit
+  end do
+  call gl_newton_root(y, deriv_bg_cosm, get_phi, get_dphi, phi_init, z, g, dt, SYS_DIM_BG, eps_0, c_max_0, eps_0, c_max_0/4)
+  ! set y_init with \alpha = \alpha_{init} when \phi = \phi_{init}
+  y_init = y_0
+  y_init(ALPHA_I) = y_init(ALPHA_I) - y(ALPHA_I) + alpha_init
+  call set_hub_cosm(y_init)
+  
+  call cpu_time(start_time)
+  
+  ! Loop over k
+  do i=1,nk
+     print*, i
+     k2 = dble(i**2)*dk**2
+     
+     ! evolve background to fixed k/(aH)
+     y(SYS_BG_I) = y_init(:)
+     g = 0._dl
+     call adapt_dt(y,0._dl)
+     do j=1,nstep
+        call gl_integrate(y(SYS_BG_I), deriv_bg_cosm, z(SYS_BG_I), g(:,SYS_BG_I,:), dt, SYS_DIM_BG, eps_0, c_max_0)
+        if (get_hor(y) .gt. 0.5_dl*log(k2)-h_fac) exit
+     end do
+     call gl_newton_root(y, deriv_bg_cosm, get_hor, get_dhor, 0.5_dl*log(k2)-h_fac, z, g, dt, SYS_DIM_BG, eps_0, c_max_0, eps_0, c_max_0/2)
+     y_init(:) = y(SYS_BG_I)
+     
+     ! evolve pert to initialization point (phi_init or alpha = 0)
+     call init_pert_cosm(y, k2, sqrt(k2))
+     call adapt_dt(y, sqrt(k2))
+     g = 0._dl
+     call gl_solve_g(y, deriv_pert_cosm, z, g, dt, SYS_DIM_PERT, eps_0, 2*c_max_0, k2)  ! this is prob not needed
+     do j=1,nstep
+        !call get_2pt_cosm(y, corr, sqrt(k2), k2)
+        !call make_output()
+        call gl_integrate(y, deriv_pert_cosm, z, g, dt, SYS_DIM_PERT, eps_0, c_max_0+4, k2)
+        if (mod(j,stepadapt) == 0) call adapt_dt(y,sqrt(k2))
+        !if (y(ALPHA_I) .gt. alpha_fin) exit
+        if (y(3) .lt. phi_fin) exit
+     end do
+     write(*,*) j
+     !call gl_newton_root(y, deriv_pert_cosm, get_alpha, d_alpha_cosm, alpha_fin, z, g, dt, SYS_DIM_PERT, eps_0, c_max_0, eps_0, c_max_0/2, k2)
+     call gl_newton_root(y, deriv_pert_cosm, get_phi, get_dphi, phi_fin, z, g, dt, SYS_DIM_PERT, eps_0, c_max_0, eps_0, c_max_0/2, k2)
+
+     ! set corr and output
+     call get_2pt_cosm(y, corr, sqrt(k2), k2)
+     call make_output()
+  end do
+
+  call cpu_time(end_time)
+  print*, 'elapsed time: ', end_time-start_time
+  print*, 'Run complete'
+
+contains
+
+  subroutine init_output(n_file)
+    integer :: n_file
+    open(unit=n_file,file=f_out)
+  end subroutine init_output
+
+  subroutine make_output()
+    write(n_file,'(32(ES22.15,2X))') y(SYS_BG_I), sqrt(k2), corr(:,:) 
+  end subroutine make_output
+
+  subroutine adapt_dt(y,k)
+    real(dl), intent(in) :: y(:)
+    real(dl), intent(in) :: k
+
+    integer :: i
+    real(dl) :: time_scale
+    real(dl), dimension(nfld,nfld) :: m2
+    real(dl), dimension(nfld) :: eig
+    real(dl), dimension((nfld+2)*nfld) :: work
+
+    m2 = bg_ddv_mat(y(PHI_I))
+    call dsyev('N','L',nfld,m2,nfld,eig,work,(nfld+2)*nfld,i)
+
+    ! eigenvalues are sorted, so only need to check max and min
+    time_scale = max(y(HUB_I), sqrt(abs(k**2/exp(2._dl*y(ALPHA_I)) + eig(1))), &
+         sqrt(abs(k**2/exp(2._dl*y(ALPHA_I)) + eig(nfld))))    
+    dt = dt0/time_scale
+
+    ! check future timescale
+    m2 = bg_ddv_mat(y(PHI_I) + dt*d_f_cosm(y))
+    call dsyev('N','L',nfld,m2,nfld,eig,work,(nfld+2)*nfld,i)
+    time_scale = max(time_scale, sqrt(abs(k**2/exp(2._dl*(y(ALPHA_I)+dt*d_alpha_cosm(y))) + eig(1))), &
+         sqrt(abs(k**2/exp(2._dl*(y(ALPHA_I)+dt*d_alpha_cosm(y))) + eig(nfld))))
+    dt = dt0/time_scale
+  end subroutine adapt_dt
+
+  ! Functions for root finding
+  function get_alpha(y) result(f)
+    real(dl), intent(in) :: y(:)
+    real(dl) :: f
+
+    f = y(ALPHA_I)
+  end function get_alpha
+
+  function get_phi(y) result(f)
+    real(dl), intent(in) :: y(:)
+    real(dl) :: f
+
+    f = y(3)
+  end function get_phi
+
+  function get_dphi(y) result(f)
+    real(dl), intent(in) :: y(:)
+    real(dl) :: f
+
+    f = y(3+nfld)
+  end function get_dphi
+
+  ! \ln(aH)
+  function get_hor(y) result(f)
+    real(dl), intent(in) :: y(:)
+    real(dl) :: f
+
+    f = y(ALPHA_I) + log(y(HUB_I))
+  end function get_hor
+
+  ! \dot{\ln(aH)}
+  function get_dhor(y) result(f)
+    real(dl), intent(in) :: y(:)
+    real(dl) :: f
+
+    f = y(HUB_I) + d_hub_cosm(y)/y(HUB_I)
+  end function get_dhor
+  
+end program evolve_pert

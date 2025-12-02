@@ -1,0 +1,146 @@
+./cosmology/Dlin_params.o : ./cosmology/Dlin_params.f90 
+./cosmology/psubs_Dlinear.o : ./cosmology/psubs_Dlinear.f90 ./cosmology/Dlin_params.o ./modules/GlobalVariables/cosmoparams.o ./modules/External/intreal_types.o 
+./pks2map/fitsvars.o : ./pks2map/fitsvars.f90 
+./pks2map/pks2map.o : ./pks2map/pks2map.f90 ./modules/RandomField/random.o ./modules/External/textlib.o ./modules/External/head_fits.o ./modules/External/healpix_types.o ./modules/External/fitstools.o ./pks2cmb/flatskyvars.o ./pks2cmb/healpixvars.o ./pks2cmb/fitsvars.o ./modules/External/mpivars.o ./pks2cmb/profiles.o ./pks2cmb/haloproject.o ./pks2cmb/pksc.o ./pks2cmb/line_profile.o ./pks2cmb/cosmology.o 
+./pks2map/flatskyvars.o : ./pks2map/flatskyvars.f90 
+./pks2map/pksc.o : ./pks2map/pksc.f90 ./modules/RandomField/random.o ./pks2cmb/profiles.o ./modules/External/mpivars.o ./pks2cmb/cosmology.o 
+./pks2map/profiles.o : ./pks2map/profiles.f90 
+./pks2map/bbps_profile.o : ./pks2map/bbps_profile.f90 ./pks2cmb/cosmology.o 
+./pks2map/halomodels.o : ./pks2map/halomodels.f90 
+./pks2map/healpixvars.o : ./pks2map/healpixvars.f90 
+./pks2map/haloproject.o : ./pks2map/haloproject.f90 ./modules/External/head_fits.o ./modules/External/healpix_types.o ./modules/External/pix_tools.o ./pks2cmb/profiles.o ./pks2cmb/line_profile.o ./pks2cmb/bbps_profile.o ./pks2cmb/maptable.o ./pks2cmb/healpixvars.o ./pks2cmb/flatskyvars.o ./modules/External/mpivars.o ./pks2cmb/cosmology.o 
+./pks2map/make_maptable.o : ./pks2map/make_maptable.f90 ./modules/External/textlib.o ./pks2cmb/cosmology.o ./pks2cmb/maptable.o 
+./pks2map/maptable.o : ./pks2map/maptable.f90 ./pks2cmb/profiles.o ./pks2cmb/integrate_profiles.o ./pks2cmb/bbps_profile.o ./pks2cmb/cosmology.o 
+./pks2map/integrate_profiles.o : ./pks2map/integrate_profiles.f90 ./pks2cmb/bbps_profile.o ./pks2cmb/cosmology.o 
+./pks2map/diffuse_profiles.o : ./pks2map/diffuse_profiles.f90 ./pks2cmb/cosmology.o 
+./pks2map/line_profile.o : ./pks2map/line_profile.f90 ./pks2cmb/flatskyvars.o ./pks2cmb/cosmology.o 
+./pks2map/cosmology.o : ./pks2map/cosmology.f90 
+./instability/evolve_corr.o : ./instability/evolve_corr.f90 ./instability/corr_cosmic.o ./instability/eom_pert_cosmic.o ./instability/eom_bg_cosmic.o ./instability/newton_root.o ./instability/gl_integrator.o ./modules/GlobalVariables/params.o 
+./instability/ballistic_ensemble.o : ./instability/ballistic_ensemble.f90 ./instability/eom_bg_cosmic.o ./instability/newton_root.o ./instability/gl_integrator.o ./modules/GlobalVariables/params.o 
+./instability/params.o : ./instability/params.f90 
+./instability/gl_integrator.o : ./instability/gl_integrator.f90 ./instability/butcher_table.o ./modules/GlobalVariables/params.o 
+./instability/eom_pert_cosmic.o : ./instability/eom_pert_cosmic.f90 ./instability/util.o ./instability/eom_bg_cosmic.o ./instability/potential.o ./modules/GlobalVariables/params.o 
+./instability/butcher_table.o : ./instability/butcher_table.f90 ./modules/GlobalVariables/params.o 
+./instability/eom_bg_cosmic.o : ./instability/eom_bg_cosmic.f90 ./instability/potential.o ./modules/GlobalVariables/params.o 
+./instability/corr_mod.o : ./instability/corr_mod.f90 ./instability/corr_cosmic.o ./instability/eom_pert_cosmic.o ./instability/eom_bg_cosmic.o ./instability/newton_root.o ./instability/gl_integrator.o ./modules/GlobalVariables/params.o 
+./instability/lat_params.o : ./instability/lat_params.f90 
+./instability/lat_init_mod.o : ./instability/lat_init_mod.f90 ./modules/GlobalVariables/params.o 
+./instability/evolve_corr_original.o : ./instability/evolve_corr_original.f90 ./instability/corr_cosmic.o ./instability/eom_pert_cosmic.o ./instability/eom_bg_cosmic.o ./instability/newton_root.o ./instability/gl_integrator.o ./modules/GlobalVariables/params.o 
+./instability/util.o : ./instability/util.f90 ./modules/GlobalVariables/params.o 
+./instability/newton_root.o : ./instability/newton_root.f90 ./instability/gl_integrator.o ./modules/GlobalVariables/params.o 
+./instability/potential.o : ./instability/potential.f90 ./modules/GlobalVariables/params.o 
+./instability/corr_cosmic.o : ./instability/corr_cosmic.f90 ./instability/util.o ./instability/eom_pert_cosmic.o ./instability/eom_bg_cosmic.o 
+./merge_pkvd/sort2.o : ./merge_pkvd/sort2.f 
+./merge_pkvd/arrays_params.o : ./merge_pkvd/arrays_params.f90 
+./merge_pkvd/merge_pkvd.o : ./merge_pkvd/merge_pkvd.f90 ./merge_pkvd/exclusion.o ./merge_pkvd/arrays_params.o ./modules/External/textlib.o ./modules/External/mpivars.o 
+./merge_pkvd/exclusion.o : ./merge_pkvd/exclusion.f90 ./modules/External/mpivars.o 
+./modules/padICs/padICs.o : ./modules/padICs/padICs.f90 ./modules/External/textlib.o 
+./modules/TabInterp/TabInterp.o : ./modules/TabInterp/TabInterp.f90 ./modules/External/mpivars.o 
+./modules/Solvers/Solvers.o : ./modules/Solvers/Solvers.f90 ./modules/External/intreal_types.o 
+./modules/GlobalVariables/cosmoparams.o : ./modules/GlobalVariables/cosmoparams.f90 
+./modules/GlobalVariables/params.o : ./modules/GlobalVariables/params.f90 
+./modules/GlobalVariables/input_parameters.o : ./modules/GlobalVariables/input_parameters.f90 ./modules/GlobalVariables/cosmoparams.o 
+./modules/GlobalVariables/globalvars.o : ./modules/GlobalVariables/globalvars.f90 
+./modules/RandomField/types.o : ./modules/RandomField/types.f90 
+./modules/RandomField/fftwvars.o : ./modules/RandomField/fftwvars.f90 ./modules/External/mpivars.o ./modules/RandomField/types.o 
+./modules/RandomField/random.o : ./modules/RandomField/random.f90 
+./modules/RandomField/fftw_interface.o : ./modules/RandomField/fftw_interface.f90 ./modules/External/openmpvars.o ./modules/External/mpivars.o 
+./modules/RandomField/timing_diagnostics.o : ./modules/RandomField/timing_diagnostics.f90 ./modules/External/textlib.o 
+./modules/RandomField/pktable.o : ./modules/RandomField/pktable.f90 ./modules/RandomField/globalvars.o 
+./modules/RandomField/gaussian_field.o : ./modules/RandomField/gaussian_field.f90 ./modules/RandomField/pktable.o ./modules/RandomField/random.o ./modules/External/openmpvars.o ./modules/RandomField/globalvars.o ./modules/External/timing_diagnostics.o ./modules/External/mpivars.o ./modules/RandomField/fftw_interface.o ./modules/RandomField/grid_old.o 
+./modules/RandomField/tiles.o : ./modules/RandomField/tiles.f90 ./modules/External/mpivars.o ./modules/External/intreal_types.o 
+./modules/RandomField/mpnorm.o : ./modules/RandomField/mpnorm.F90 ./modules/RandomField/types.o 
+./modules/RandomField/input_parameters.o : ./modules/RandomField/input_parameters.f90 ./modules/GlobalVariables/cosmoparams.o 
+./modules/RandomField/textlib.o : ./modules/RandomField/textlib.f90 
+./modules/RandomField/time.o : ./modules/RandomField/time.f90 
+./modules/RandomField/grid.o : ./modules/RandomField/grid.f90 ./modules/External/intreal_types.o 
+./modules/RandomField/RandomField.o : ./modules/RandomField/RandomField.f90 ./pks2cmb/cosmology.o ./modules/External/intreal_types.o ./modules/External/timing_diagnostics.o ./modules/RandomField/random.o ./modules/RandomField/chi2zeta.o ./modules/External/openmpvars.o ./modules/RandomField/fftw_interface.o ./modules/RandomField/globalvars.o ./modules/RandomField/pktable.o ./modules/External/mpivars.o ./modules/RandomField/tiles.o ./modules/RandomField/grid_old.o ./modules/RandomField/gaussian_field.o 
+./modules/RandomField/RandomFieldExample.o : ./modules/RandomField/RandomFieldExample.f90 ./modules/RandomField/RandomField.o ./modules/External/textlib.o ./modules/External/mpivars.o 
+./modules/RandomField/chi2zeta.o : ./modules/RandomField/chi2zeta.f90 ./modules/RandomField/globalvars.o ./modules/RandomField/fftw_interface.o ./modules/External/timing_diagnostics.o ./modules/External/mpivars.o ./modules/RandomField/grid_old.o 
+./modules/RandomField/grid_old.o : ./modules/RandomField/grid_old.f90 ./modules/RandomField/types.o 
+./modules/RandomField/growth.o : ./modules/RandomField/growth.f 
+./modules/RandomField/read_power_spectrum.o : ./modules/RandomField/read_power_spectrum.f90 ./modules/RandomField/random.o ./modules/RandomField/RandomField.o ./modules/RandomField/gaussian_field.o ./modules/RandomField/fftw_interface.o ./modules/TabInterp/TabInterp.o ./modules/External/timing_diagnostics.o ./modules/External/mpivars.o ./modules/RandomField/grid_old.o ./modules/RandomField/globalvars.o ./modules/RandomField/input_parameters.o ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/params.o ./hpkvd/arrays.o ./modules/External/intreal_types.o 
+./modules/RandomField/fftwtest3.o : ./modules/RandomField/fftwtest3.f90 
+./modules/RandomField/transform.o : ./modules/RandomField/transform.F90 ./modules/RandomField/fftwvars.o ./modules/RandomField/types.o 
+./modules/RandomField/make_zeta.o : ./modules/RandomField/make_zeta.f90 ./modules/RandomField/random.o ./modules/RandomField/RandomField.o ./modules/RandomField/gaussian_field.o ./modules/RandomField/fftw_interface.o ./modules/TabInterp/TabInterp.o ./modules/External/timing_diagnostics.o ./modules/External/mpivars.o ./modules/RandomField/grid_old.o ./modules/RandomField/globalvars.o ./modules/RandomField/input_parameters.o ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/params.o ./hpkvd/arrays.o ./modules/External/intreal_types.o 
+./modules/RandomField/cosmology.o : ./modules/RandomField/cosmology.f90 
+./modules/RandomField/collapse.o : ./modules/RandomField/collapse.f 
+./modules/RandomField/globalvars.o : ./modules/RandomField/globalvars.f90 
+./modules/RandomField/memory_management.o : ./modules/RandomField/memory_management.f90 ./modules/External/mpivars.o ./modules/RandomField/fftwvars.o 
+./modules/RandomField/mpivars.o : ./modules/RandomField/mpivars.f90 
+./modules/SlabToCube/SlabToCube.o : ./modules/SlabToCube/SlabToCube.f90 ./modules/RandomField/globalvars.o ./modules/RandomField/grid_old.o ./modules/RandomField/fftw_interface.o ./modules/RandomField/tiles.o ./modules/External/mpivars.o 
+./modules/HomogeneousEllipsoid/runhomel.o : ./modules/HomogeneousEllipsoid/runhomel.f90 ./modules/HomogeneousEllipsoid/HomogeneousEllipsoid.o ./modules/RandomField/input_parameters.o ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/params.o ./modules/External/intreal_types.o 
+./modules/HomogeneousEllipsoid/homeosubs.o : ./modules/HomogeneousEllipsoid/homeosubs.f90 ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/params.o ./modules/RandomField/input_parameters.o ./modules/External/intreal_types.o ./modules/Solvers/Solvers.o 
+./modules/HomogeneousEllipsoid/HomogeneousEllipsoid.o : ./modules/HomogeneousEllipsoid/HomogeneousEllipsoid.f90 ./modules/GlobalVariables/cosmoparams.o ./modules/GlobalVariables/params.o ./modules/RandomField/input_parameters.o ./modules/External/intreal_types.o ./modules/Solvers/Solvers.o 
+./modules/Analysis/catalog.o : ./modules/Analysis/catalog.f90 
+./modules/External/convert_inplace_1d_inc.o : ./modules/External/convert_inplace_1d_inc.f90 
+./modules/External/healpix_fft.o : ./modules/External/healpix_fft.F90 ./modules/External/extension.o ./modules/External/healpix_types.o 
+./modules/External/remove_dipole_inc.o : ./modules/External/remove_dipole_inc.f90 
+./modules/External/indmed_part1.o : ./modules/External/indmed_part1.f90 
+./modules/External/long_intrinsic.o : ./modules/External/long_intrinsic.F90 ./modules/External/healpix_types.o 
+./modules/External/convert_ring2nest_1d_inc.o : ./modules/External/convert_ring2nest_1d_inc.f90 
+./modules/External/coord_v_convert.o : ./modules/External/coord_v_convert.f90 ./modules/External/pix_tools.o ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/pixel_routines.o : ./modules/External/pixel_routines.F90 ./modules/External/bit_manipulation.o ./modules/External/num_rec.o 
+./modules/External/mpi_alm_tools_template.o : ./modules/External/mpi_alm_tools_template.f90 
+./modules/External/openmpvars.o : ./modules/External/openmpvars.f90 
+./modules/External/Endian_Utility.o : ./modules/External/Endian_Utility.f90 ./modules/External/Type_Kinds.o 
+./modules/External/ran_tools_dist.o : ./modules/External/ran_tools_dist.f90 ./modules/External/healpix_types.o 
+./modules/External/rngmod.o : ./modules/External/rngmod.f90 ./modules/External/healpix_types.o 
+./modules/External/utilities.o : ./modules/External/utilities.f90 
+./modules/External/timing_diagnostics.o : ./modules/External/timing_diagnostics.f90 ./modules/External/mpivars.o ./modules/External/textlib.o 
+./modules/External/head_fits.o : ./modules/External/head_fits.F90 ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/pix_tools.o : ./modules/External/pix_tools.F90 ./modules/External/statistics.o ./modules/External/num_rec.o ./modules/External/long_intrinsic.o ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/num_rec.o : ./modules/External/num_rec.F90 ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/Type_Kinds.o : ./modules/External/Type_Kinds.f90 
+./modules/External/udgrade_nr.o : ./modules/External/udgrade_nr.f90 ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/fits_s_inc.o : ./modules/External/fits_s_inc.f90 ./modules/External/healpix_types.o ./modules/External/pix_tools.o ./modules/External/long_intrinsic.o 
+./modules/External/healpix_types.o : ./modules/External/healpix_types.F90 
+./modules/External/healpix_modules.o : ./modules/External/healpix_modules.f90 ./modules/External/obsolete.o ./modules/External/ran_tools_dist.o ./modules/External/mask_tools.o ./modules/External/udgrade_nr.o ./modules/External/alm_tools.o ./modules/External/fitstools.o ./modules/External/head_fits.o ./modules/External/pix_tools.o ./modules/External/bit_manipulation.o ./modules/External/coord_v_convert.o ./modules/External/rngmod.o ./modules/External/statistics.o ./modules/External/num_rec.o ./modules/External/healpix_fft.o ./modules/External/long_intrinsic.o ./modules/External/paramfile_io.o ./modules/External/utilities.o ./modules/External/misc_utils.o ./modules/External/extension.o ./modules/External/healpix_types.o 
+./modules/External/bit_manipulation.o : ./modules/External/bit_manipulation.F90 ./modules/External/healpix_types.o 
+./modules/External/convert_ring2nest_nd_inc.o : ./modules/External/convert_ring2nest_nd_inc.f90 
+./modules/External/mpi_alm_tools.o : ./modules/External/mpi_alm_tools.f90 ./modules/External/alm_tools.o ./modules/External/misc_utils.o ./modules/External/healpix_fft.o ./modules/External/healpix_types.o 
+./modules/External/misc_utils.o : ./modules/External/misc_utils.F90 ./modules/External/extension.o ./modules/External/healpix_types.o 
+./modules/External/source_gen_sort_inc.o : ./modules/External/source_gen_sort_inc.f90 
+./modules/External/fitstools.o : ./modules/External/fitstools.F90 ./modules/External/long_intrinsic.o ./modules/External/pix_tools.o ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/textlib.o : ./modules/External/textlib.f90 
+./modules/External/obsolete.o : ./modules/External/obsolete.f90 ./modules/External/healpix_types.o 
+./modules/External/alm_tools.o : ./modules/External/alm_tools.F90 ./modules/External/paramfile_io.o ./modules/External/pix_tools.o ./modules/External/extension.o ./modules/External/fitstools.o ./modules/External/long_intrinsic.o ./modules/External/healpix_fft.o ./modules/External/healpix_types.o ./modules/External/misc_utils.o 
+./modules/External/mask_tools.o : ./modules/External/mask_tools.F90 ./modules/External/num_rec.o ./modules/External/misc_utils.o ./modules/External/pix_tools.o ./modules/External/long_intrinsic.o ./modules/External/healpix_types.o 
+./modules/External/udgrade_d_inc.o : ./modules/External/udgrade_d_inc.f90 ./modules/External/long_intrinsic.o ./modules/External/pix_tools.o 
+./modules/External/intreal_types.o : ./modules/External/intreal_types.f90 
+./modules/External/udgrade_s_inc.o : ./modules/External/udgrade_s_inc.f90 ./modules/External/long_intrinsic.o ./modules/External/pix_tools.o 
+./modules/External/indmed_part2.o : ./modules/External/indmed_part2.f90 
+./modules/External/convert_nest2ring_nd_inc.o : ./modules/External/convert_nest2ring_nd_inc.f90 
+./modules/External/convert_inplace_nd_inc.o : ./modules/External/convert_inplace_nd_inc.f90 
+./modules/External/indmed.o : ./modules/External/indmed.f90 
+./modules/External/udgrade_template.o : ./modules/External/udgrade_template.f90 ./modules/External/long_intrinsic.o ./modules/External/pix_tools.o 
+./modules/External/statistics.o : ./modules/External/statistics.f90 ./modules/External/long_intrinsic.o ./modules/External/indmed.o ./modules/External/misc_utils.o ./modules/External/healpix_types.o 
+./modules/External/alm_map_dd_inc.o : ./modules/External/alm_map_dd_inc.F90 ./modules/External/head_fits.o ./modules/External/fitstools.o ./modules/External/rngmod.o ./modules/External/pix_tools.o ./modules/External/statistics.o 
+./modules/External/alm_map_ss_inc.o : ./modules/External/alm_map_ss_inc.F90 ./modules/External/head_fits.o ./modules/External/fitstools.o ./modules/External/rngmod.o ./modules/External/pix_tools.o ./modules/External/statistics.o 
+./modules/External/paramfile_io.o : ./modules/External/paramfile_io.F90 ./modules/External/misc_utils.o ./modules/External/extension.o ./modules/External/healpix_types.o 
+./modules/External/alm_map_template.o : ./modules/External/alm_map_template.F90 ./modules/External/head_fits.o ./modules/External/fitstools.o ./modules/External/rngmod.o ./modules/External/pix_tools.o ./modules/External/statistics.o 
+./modules/External/convert_nest2ring_1d_inc.o : ./modules/External/convert_nest2ring_1d_inc.f90 
+./modules/External/extension.o : ./modules/External/extension.F90 ./modules/External/healpix_types.o 
+./modules/External/fits_d_inc.o : ./modules/External/fits_d_inc.f90 ./modules/External/healpix_types.o ./modules/External/pix_tools.o ./modules/External/long_intrinsic.o 
+./modules/External/fits_template.o : ./modules/External/fits_template.f90 ./modules/External/healpix_types.o ./modules/External/pix_tools.o ./modules/External/long_intrinsic.o 
+./modules/External/bound_commod.o : ./modules/External/bound_commod.f90 
+./modules/External/memory_management.o : ./modules/External/memory_management.f90 
+./modules/External/mpivars.o : ./modules/External/mpivars.f90 
+./pks2cmb/fitsvars.o : ./pks2cmb/fitsvars.f90 
+./pks2cmb/flatskyvars.o : ./pks2cmb/flatskyvars.f90 
+./pks2cmb/pksc.o : ./pks2cmb/pksc.f90 ./modules/RandomField/random.o ./pks2cmb/profiles.o ./modules/External/mpivars.o ./pks2cmb/cosmology.o 
+./pks2cmb/profiles.o : ./pks2cmb/profiles.f90 
+./pks2cmb/bbps_profile.o : ./pks2cmb/bbps_profile.f90 ./pks2cmb/cosmology.o 
+./pks2cmb/healpixvars.o : ./pks2cmb/healpixvars.f90 
+./pks2cmb/haloproject.o : ./pks2cmb/haloproject.f90 ./modules/External/head_fits.o ./modules/External/healpix_types.o ./modules/External/pix_tools.o ./pks2cmb/profiles.o ./pks2cmb/line_profile.o ./pks2cmb/bbps_profile.o ./pks2cmb/maptable.o ./pks2cmb/healpixvars.o ./pks2cmb/flatskyvars.o ./modules/External/mpivars.o ./pks2cmb/cosmology.o 
+./pks2cmb/make_maptable.o : ./pks2cmb/make_maptable.f90 ./modules/External/textlib.o ./pks2cmb/cosmology.o ./pks2cmb/maptable.o 
+./pks2cmb/pks2cmb.o : ./pks2cmb/pks2cmb.f90 ./modules/RandomField/random.o ./modules/External/textlib.o ./modules/External/head_fits.o ./modules/External/healpix_types.o ./modules/External/fitstools.o ./pks2cmb/flatskyvars.o ./pks2cmb/healpixvars.o ./pks2cmb/fitsvars.o ./modules/External/mpivars.o ./pks2cmb/profiles.o ./pks2cmb/haloproject.o ./pks2cmb/pksc.o ./pks2cmb/line_profile.o ./pks2cmb/cosmology.o 
+./pks2cmb/maptable.o : ./pks2cmb/maptable.f90 ./pks2cmb/profiles.o ./pks2cmb/integrate_profiles.o ./pks2cmb/bbps_profile.o ./pks2cmb/cosmology.o 
+./pks2cmb/integrate_profiles.o : ./pks2cmb/integrate_profiles.f90 ./pks2cmb/bbps_profile.o ./pks2cmb/cosmology.o 
+./pks2cmb/line_profile.o : ./pks2cmb/line_profile.f90 ./pks2cmb/flatskyvars.o ./pks2cmb/cosmology.o 
+./pks2cmb/cosmology.o : ./pks2cmb/cosmology.f90 
+./hpkvd/arrays_gen.o : ./hpkvd/arrays_gen.f90 ./modules/External/intreal_types.o 
+./hpkvd/hpkvd.o : ./hpkvd/hpkvd.f90 ./modules/External/Endian_Utility.o ./hpkvd/io.o ./modules/External/memory_management.o ./modules/TabInterp/TabInterp.o ./modules/SlabToCube/SlabToCube.o ./modules/RandomField/RandomField.o ./hpkvd/arrays.o ./modules/GlobalVariables/params.o ./modules/RandomField/fftw_interface.o ./modules/External/textlib.o ./modules/RandomField/input_parameters.o ./modules/External/timing_diagnostics.o ./modules/External/intreal_types.o ./modules/External/mpivars.o 
+./hpkvd/peakvoidsubs.o : ./hpkvd/peakvoidsubs.f90 ./modules/External/timing_diagnostics.o ./modules/External/memory_management.o ./modules/External/intreal_types.o ./hpkvd/arrays.o ./modules/External/mpivars.o ./modules/TabInterp/TabInterp.o ./modules/GlobalVariables/params.o ./modules/RandomField/input_parameters.o ./modules/HomogeneousEllipsoid/HomogeneousEllipsoid.o 
+./hpkvd/arrays.o : ./hpkvd/arrays.f90 ./modules/External/intreal_types.o 
+./hpkvd/io.o : ./hpkvd/io.f90 

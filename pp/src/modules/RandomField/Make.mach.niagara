@@ -1,0 +1,15 @@
+#----------------------------------------------------------------------
+# OPTIONS FOR RUNNING ON SCINET-NIAGARA MACHINES
+#----------------------------------------------------------------------
+
+F90 = mpif90
+F77 = mpif77
+OPTIMIZE =  -O4 -w -mcmodel=large -shared-intel 
+FFTWOMP = -lfftw3f_omp
+MODFLAG = -module 
+OMPLIB = -fopenmp
+
+#CC = mpicc
+#C++ = mpiCC
+CCOPTIMIZE = -w -fno-exceptions 
+

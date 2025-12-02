@@ -1,0 +1,22 @@
+# -*-Makefile-*-
+# Makefile for evolve.f90
+
+VPATH = ./
+# FC=gfortran
+# FFLAGS=-cpp -ffree-line-length-none
+FC = ifort
+FFLAGS=-fpp # -traceback
+# LIBS = -mkl -lm
+EOM = eom_bg_cosmic.o
+OBJS = params.o potential.o $(EOM) butcher_table.o gl_integrator.o newton_root.o
+
+evolve: %: $(OBJS) ballistic_ensemble.o
+	$(FC) $(FFLAGS) -o evolve_ballistic ballistic_ensemble.f90 $(OBJS)
+
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $< -o $@
+
+clean:
+	rm -f *.o
+	rm -f *.mod
+	rm -f evolve_ballistic

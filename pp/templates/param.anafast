@@ -1,0 +1,5 @@
+simul_type = 1
+nlmax      = ELLMAX_REPLACE
+infile     = hp_hp.fits
+outfile    = cl.fits
+regression = 0

@@ -1,0 +1,27 @@
+# -*-Makefile-*-
+# Makefile for evolve_pert.f90
+
+VPATH = ./
+
+# FC=gfortran
+# FFLAGS=-cpp -ffree-line-length-none -fbacktrace
+# BLAS_LIB = -L /usr/lib/x86_64-linux-gnu/blas/
+# LAPACK_LIB = -L /usr/lib/x86_64-linux-gnu/lapack/
+# LIBS = -llapack -lblas -lm
+FC = ifort
+FFLAGS=-fpp # -traceback
+LIBS = -mkl -lm
+
+EOM = eom_bg_cosmic.o eom_pert_cosmic.o
+OBJS = params.o potential.o util.o $(EOM) corr_cosmic.o butcher_table.o gl_integrator.o newton_root.o
+
+evolve: %: $(OBJS) evolve_corr.o
+	$(FC) $(FFLAGS) -o corr_test evolve_corr.f90 $(OBJS) $(LAPACK_LIB) $(BLAS_LIB) $(LIBS)
+
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $< -o $@ $(LAPACK_LIB) $(BLAS_LIB) $(LIBS)
+
+clean:
+	rm -f *.o
+	rm -f *.mod
+	rm -f corr_test

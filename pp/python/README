@@ -1,0 +1,16 @@
+Log for additions to peak-path/python
+-------------------------------------
+
+**************************************************************************
+05.01.17 (MA)
+
+Added pksc2npz.py which reads in a set of pksc files matching a pattern 
+and outputs a .npz file containing either 
+ (halo mass, comoving distance;			ipos=0, ivel=0)
+ (halo mass, comoving distance, velocity;	ipos=0, ivel=1)
+ (halo mass, position;				ipos=1, ivel=0
+ (halo mass, position, velocity;		ipos=1, ivel=1)
+Usage:
+  pksc2npz.py <Mmin [Msun/h]> <zmax> <pattern> <fileout> \
+              <write positions [=0]> <write velocities [=0]>
+

@@ -1,0 +1,12 @@
+#$(ini_mods): $(ini_mods:.o=.f90) $(gv_mods) $(exdir)/mpivars.o $(hpdir)/arrays.o $(ti_mods)
+#$(hpdir)/arrays_tmp.f90: $(hpdir)/arrays.f90
+#	cp $< $@
+#	sed 's/N_REPLACE/$(N_REPLACE)/g' $< > $@
+
+#$(hpdir)/arrays.o : $(hpdir)/arrays.f90 $(exdir)/intreal_types.o 
+#	$(F90) $(OPTIONS) -c $< -o $@
+#	#rm -f $(hpdir)/arrays_tmp.f90
+
+#$(inidir)/config_reader.o : $(inidir)/config_reader.f90 $(gv_mods) \
+#	$(exdir)/mpivars.o $(hpdir)/arrays.o $(ti_mods) 
+#	$(F90) $(OPTIONS) -c $< -o $@

@@ -1,0 +1,54 @@
+# Makefile for running HomEl on macOS
+
+# Compilers and options
+F90     = gfortran # Fortran compiler
+OPTIONS = -O4 -w   # Fortran compiler options   #-g++  or  -lstdc++
+
+# MODULES
+moddir = ./modules
+bindir = ../bin
+# External Modules
+exdir   = $(moddir)/External
+ex_mods = $(exdir)/intreal_types.o
+# Global Variables
+gvdir   = $(moddir)/GlobalVariables
+gv_mods = \
+	$(gvdir)/cosmoparams.o\
+	$(gvdir)/input_parameters.o\
+	$(gvdir)/params.o
+
+# LINEAR COSMOLOGY DIRECTORY
+cosmodir   = ./cosmology
+cosmo_mods = \
+        $(cosmodir)/Dlin_params.o\
+        $(cosmodir)/psubs_Dlinear.o
+
+# SOLVERS
+sldir   = $(moddir)/Solvers
+sl_mods = $(sldir)/Solvers.o
+
+# HOMOGENEOUS ELLIPSOID
+hedir   = $(moddir)/HomogeneousEllipsoid
+he_mods = $(hedir)/HomogeneousEllipsoid.o
+
+EXEC = HomogeneousEllipsoid
+OBJS = $(ex_mods) $(gv_mods) $(cosmo_mods) $(sl_mods) $(he_mods)
+
+# Making executibles
+.SUFFIXES: .o .f90
+$(exdir)/%.o: $(exdir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(gvdir)/%.o: $(gvdir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(cosmodir)/%.o: $(cosmodir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(sldir)/%.o: $(sldir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(hedir)/%.o: $(hedir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(EXEC): $(OBJS)
+	$(F90) $(OPTIONS) $(OBJS) -o $(bindir)/$(EXEC)
+
+# For make clean
+clean:
+	rm -f $(moddir)/*.mod $(sldir)/*.o $(cosmodir)/*.o $(exdir)/*.o $(gvdir)/*.o

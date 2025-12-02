@@ -1,0 +1,74 @@
+#!/bin/bash
+
+echoLn () {
+    if [ "`uname -s`" = "Linux" -o "`uname -s`" = "Darwin" ]; then
+	echo -n "$*"
+    else
+	echo "$*\c"
+    fi
+}
+
+
+setpypProfile(){
+    echo "You seem to be running $SHELL"
+    ppInstallDir=$1
+   
+    echo "peak-patch is in $ppInstallDir" 
+    USER=${USER-`id -u -n`}
+    SHELL=`basename ${SHELL-/bin/sh}`
+    
+    
+    case $SHELL in
+	csh|tcsh)
+	    ppdir="setenv PP_DIR $ppInstallDir"
+	    pypdir="setenv PYTHONPATH $ppInstallDir/python"
+	    pppath="setenv PATH \${PATH}:$ppInstallDir/python:$ppInstallDir/bin"
+	    prof="${HOME}/.cshrc"
+	    ;;
+	sh|ksh|bash)
+	    ppdir="export PP_DIR=$ppInstallDir"
+	    pypdir="export PYTHONPATH=$ppInstallDir/python"
+	    pppath=" export PATH=\$PATH:$ppInstallDir/bin:$ppInstallDir/python"
+	    prof="${HOME}/.bashrc"
+	    ;;
+    esac
+
+    # Note: can add a line to avoid this if ppdir is already in the profile
+
+    [ ! -r $prof ] && touch $prof
+    check=`grep PykPatchAutoConf $prof | wc -l`
+    if [ $check -eq 0 ]; then
+	echo ""
+	echoLn "Do you want this modification to be done (y|N)? "
+	read answer
+	if [ "x$answer" = "xy" -o "x$answer" = "xY" ]; then
+	    cp $prof ${prof}".save"
+	    echo "" >> $prof
+	    echo "# modifications by PykPatchAutoConf" >> $prof
+	    echo $ppdir >> $prof
+	    echo $pypdir >> $prof
+	    echo $pppath >> $prof
+	    echo "Modification done and previous shell profile saved"
+	    echo "as ${prof}.save."
+	fi
+    fi
+}
+
+setupExe(){
+    pphome=$1
+    for f in $pphome/python/peak-patch*.py
+    do
+	chmod u+x $f 
+    done	
+}
+
+installDir=${PWD}
+setpypProfile $installDir
+setupExe $installDir
+
+
+echo " "
+echo "Configuration finished."
+echo "You can now use peak-patch"
+
+exit 0

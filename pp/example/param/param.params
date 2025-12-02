@@ -1,0 +1,272 @@
+###########################################################################
+###                  PEAK PATCH-WEBSKY PARAMETER FILE                   ###
+###########################################################################
+#                                                                         # 
+# This is core parameter file for the Peak Patch-Websky pipeline. The     #
+# parameters in this file fully specify the cosmology and all the run     #
+# variables needed to generate halo catalogues using Peak Patch, and to   #
+# make sky maps from those catalgues using the Websky simulations.        #
+#                                                                         # 
+# The parameter file is read in by the runner script peak-patch.py. For   #
+# more information, see readme.md in the Peak Patch home directory.       #
+#                                                                         # 
+###########################################################################
+
+# Boolian switches, if 1, proceed
+hpkvd_params       = 1 # Make fortran-readable param file for hpkvd.f90
+compile_hpkvd      = 1 # Link and compiles hpkvd.f90
+create_filterbank  = 1 # Make table of smoothing scales for peak finding
+merge_params       = 1 # Make fortran-readable param file for merge_pkvd
+compile_merge      = 1 # Link and compiler merge_pkvd.f90
+map_params         = 1 # Make fortran-readable param file for map-making
+compile_maps       = 1 # Link & compile pks2map.f90
+batch              = 1 # Make a job script
+submit             = 0 # Submits the job script to the scheduler
+
+# Host computing cluster information
+machine            = 'niagara'
+submit_command     = 'sbatch'
+rapi               = 'cip-591-ad' # Resource Allocation Proposal Identifier
+# Note that the RAPI allows you to specify which Niagara allocation to use
+# if you are a user of multiple. This variable is not currently in use.
+
+
+###########################################################################
+###   Main run parameters for Peak Patch                                ###
+###########################################################################
+
+# Peak Patch run description
+seed               =  13579 # Random seed for Gaussian initial fields
+run_name           = '512Mpc_n256_nb14_nt2'
+short_name         = '512Mpc_nb14'
+runtype            = 'single' # 'single' or 'multi'
+# Multi runs will make many realizations of the same box by repeating the
+# simulation with seed+=2 until the time limit is reached.
+
+# Pixellation and parallelization scheme
+boxsize            = 4000. # Sidelength (Mpc/h) of simulation w/o buffers
+nmesh              = 240   # Sidelength of one "tile" (lattice cells)
+nbuff              = 20    # Size of buffers (lattice cells)
+ntile              = 1     # Lattice divided into ntile^3 "tiles" to be run
+# in parallel. See peak-patch/Parallelization.pdf for full descriptiong of
+# pixellation and parallelization scheme.
+largerun           = 0 # For large runs, we can set largerun=1 to split
+                       # pre-merge halo catalogues into multiple files to
+                       # avoid filesize issues.
+
+# Cluster parameters for Peak Patch run
+tlimit             = '1:00:00'     # 24:00:00>tlimit>15:00:00 (hr:min:sec)
+nnodes             = 1             # requested number of nodes on cluster
+tpnode             = 1             # parallel tasks per node
+ntasks             = nnodes*tpnode # total parallel tasks (= ntile^3)
+ncpus              = 1             # number of CPUs per task
+nompth             = 1             # number of threads per CPU
+# Niagara has 2048 nodes, 40 CPUs/node, and 188 GiB (202 GB) RAM/node, so
+# ncpus*tpnode=40. The total number of tasks is number of "tiles" into
+# which the simulation is divided, so ntasks=ntile^3. To find tilings that
+# work with the chosen computer architecture, use tools/setup-run.py.
+
+# Cluster parameters for Websky runs
+tlimit_map         = '12:00:00'         # time limit for Websky runs
+nnodes_map         = 1                  # nodes/single Websky runs
+ppn_map            = 1                  # tasks/node in map making
+ntasks_map         = ppn_map*nnodes_map # number of parallel tasks per node
+np_map             = 40                 # CPUs/task (40/ppn_map on Niagara)
+nompth_map         = 1                  # threads/CPU (usually 1)
+# Typically, each Websky map is submitted as a single job once a Peak Patch
+# catalogue has been generated. For these single runs, ntasks_map=1, and
+# the number of compute cores is determined by the cluster (np_map=40 for
+# Niagara).
+
+# Type of Peak Patch run
+ievol              = 1    # Evolution along l.o.s. for light-cone runs
+num_redshifts      = 1    # If num_redshifts > 1 then ievol = 0 
+maximum_redshift   = 3.0  # If num_redshifts > 1 then global_redshift
+global_redshift    = 0.0  #    is the minimum_redshift
+# Peak Patch can either be run with the whole box at one redshift, or in a
+# "light-cone run" with evolution along a line of sight. In the former
+# case, peaks can either be found at a single redshift (z=global_redshift)
+# if num_redshifts=1 or at multiple (global_redshift<=z<=maximum_redshift). 
+
+ilpt               = 2 # Peak displacement with 1LPT or 2LPT respectively
+ioutfield          = 1 # 1 density, 2 density & displacements, 3 make both
+                       # both fields, do not run Peak Patch
+ireadfield         = 0 # 1 read external field, 0 create from seed & P(k)
+iwant_field_part   = 0 # output masked and unmasked peaks in raw catalogue
+fielddir           = 'fields/'
+densfilein         = run_name
+densfileout        = run_name
+
+# Non-Gaussianity model parameters
+# NonGauss selects the type of non-Gaussianity in the initial conditions:
+#   0 for Gaussian initial conditions
+#   1 for classical f_NL with a correlated non-Gaussian component
+#   2 for classical f_NL with an un uncorrelated non-Gaussian component
+#   3 for intermittent NG with Gaussian spike
+#   4 for intermittent NG based on Chaotic Billiards paper
+#   5 spatially localized intermittent (under construction)
+#   6 spatially localized intermittent toy model
+#   7 spatially localized intermittent from lattice sims
+NonGauss           = 0      # 0 for off, 1 for fNL
+fNL                = 10000.
+
+# Parameters for NG model NonGauss=6, thes parameters are also used in some of the other models with NonGauss>6 as a vehicle to pass relevant numbers forward to the Fortran code. In NonGauss=11 A_nG is used as the amplification factor in the \Delta\phi(H_e,x) to \Delta\zeta(H_f,x) transfer function.
+A_nG = 1.0e-23 # amplitude of chi power spectrum
+B_nG = 1.0e-10 # high-k amplitude mitigating hard cutoff at k=2pi/R
+R_nG = 64.0    # characteristic scale of non-Gaussian peaks
+
+# Parameters for NG model NonGauss=7
+m_phi    = 1.0     # inflaton mass 
+m_chi    = 1.0     # transverse inflationary field mass
+phi_w    = 0.12547 # during the instability, the inflaton ranges from
+phi_p    = 8.49953 # phi_w+phi_p to phi_w-phi_p.
+vev      = 0.1     # vacuum expectation value
+m_tach   = 1.25e3  # tachionic mass
+a_e      = 4.9e-55 # scale factor at end of instability
+chi_seed = 90101 # random seed for generating Gaussian chi field
+
+
+###########################################################################
+###   Peak Patch Merging algorithm parameters                           ###
+###########################################################################
+
+iZeld        = ilpt
+ntilemerge   = ntile
+ntasksmerge  = ntasks
+iwrap        = 0
+
+
+###########################################################################
+###   Websky parameters                                                 ###
+###########################################################################
+# `maps` should be a string with a space-separated list of maps to make.
+#  Map options are:
+# 'tsz' - thermal Sunyaev-Zel'dovich (tSZ) effect
+# 'ksz' - kinetic Sunyaev-Zel'dovich (kSZ) effect
+# 'kap' - lensing convergece, \kappa
+# 'tau' - optical depth to polarization, \tau
+# 'tco' - carbon monoxide line intensity temperature T_{CO}
+# 'thi' - 21-cm hydrogen line intensity temperature T_{HI}
+maps         = 'tsz ksz tau kap'
+
+# Sky map pixelation schema
+nside_map    = 512 # HEALPix spherical teselation (pixels=12*nside_map^2)
+npix_map     = 512 # Square field-of-view teselation (pixels=npix_map^2)
+fov_map      = 10. # Angular sidelength of field-of-view map (degrees)
+zmin_map     = 0.0   # Min redshift used for secondary anisotropies
+zmax_map     = 1.245 # Max redshift used for secondary anisotripies
+
+tabfile_map  = 'bbps_1.tab'       # halo pressure profile table
+tabfile_sfr  = 'sfr_behroozi.dat'
+model_map    = 1
+
+scramble_map = 0 # scramble halos in theta and phi
+center_map   = 0 # recentre halos around the most massive in the catalogue
+chihview_map = 0 # displace map viewpoint to (x,y,z)=(-chiview_map,0,0)
+PSZcut_map   = 0 # cut halos below polynomial fit to Planck 2015 tSZ
+                 # selection function to match Planck observations (see
+                 # arXiv:1502.01598 fig 26 50% survey completeness contour)
+ellmax       = 512 # for finding C_l's in HEALPix anafast.f90
+
+
+###########################################################################
+###   Cosmological Parameters                                           ###
+###########################################################################
+# From Plank 2018 results. VI Cosmological Parameters
+# Table 2, column TT,TE,EE+lowE+lensing
+Omx          = 0.2645        # Omega_c, the density fraction of CDM
+OmB          = 0.0493        # Omega_b, the density fraction of baryons
+Omvac        = 1 - Omx - OmB # Omega_Lambda, the density fraction of DE
+h            = 0.6736        # little h, H_0/100 km/s/Mpc
+ns           = 0.9649        # n_s, the spectral index
+As           = 2.100e-9      # A_s, the primordial zeta power spectrum amplitude
+sigma8       = 0.8111        # sigma(z=0,r=8 Mpc)
+tau          = 0.0544        # \tau, optical depth to reionisation
+mnu          = 0.0           # sum of massive neutrino masses (eV)
+
+# Tablulated power spectra P(k) made using CAMB, Peak Patch convolves P(k)
+# with Gaussian white noise to generate initial fields
+pkfile       = 'CLASS_planck18.dat'
+# New power spectra can be made using the script
+# peak-patch/tools/powerspectrum_create.py
+
+
+###########################################################################
+###   Homogeneous Ellipsoidal Collapse Parameters                       ###
+###########################################################################
+
+ioutshear      = 0   # output shear tensor
+rmax2rs        = 0.0 # Max ratio of peak search to smoothing filter scale
+                     # If not gt 0.0 search all the way out to nbuff
+wsmooth        = 1   # 0 for gaussian, 1 for top-hat
+Rsmooth_max    = 34. # Max filter scale in Mpc
+
+# Homogeneous Ellipsoidal Collapse Interpolation Table Parameters
+TabInterpFile  = 'HomelTab.dat'
+TabInterpNx    = 151       # NFrho 
+TabInterpNy    = 20        # Nev
+TabInterpNz    = 20        # Npv     
+TabInterpX1    = 1.5       # Frhomin, will be log10'd
+TabInterpX2    = 250.0     # Frhomax, will be log10'd
+TabInterpY1    = 0.0       # evtabmin
+TabInterpY2    = 0.5       # evtabmax
+TabInterpZ1    = -1 + 1e-4 # pvoevtabmin
+TabInterpZ2    =  1 - 1e-4 # pvoevtabmax
+filterfile     = 'tables/filter.dat' # file
+
+iforce_strat   = 4 # 0 no bg
+                   # 1 sbg
+                   # 3 bg+NLstrain 
+                   # 4 stbg+Lstrain
+                   # 5 Lstrain
+                   # 6 SW b_i
+
+ivir_strat     = 2 # 1 a_jeq=fcoll_3 a_b3
+                   # 2 a_jeq=fcoll_j a_bj
+
+dcrit          = 200.  # critical overdensity (typically we use 200)
+fcoll_3        = 0.171 # radial collapse cutoff for 1st axis to collapse
+fcoll_2        = 0.171 # radial collapse cutoff for 2nd axis to collapse
+fcoll_1        = 0.01  # radial collapse cutoff for 3rd axis to collapse
+# Each axis of the initial spherical halos collapses under the homogeneous
+# ellipsoidal collapse approximation until it reaches a semi-axis fcoll_i
+# times the initial radius. If the final object formed has the critical
+# overdensity dcrit, then hpkvd.f90 identifies that as a legitimate peak.
+
+
+###########################################################################
+###   More lattice parameters used in hpkvd.f90                         ###
+###########################################################################
+nsub           = nmesh - 2 * nbuff
+next           = nsub * ntile + 2 * nbuff
+dcore_box      = boxsize / ntile
+cellsize       = dcore_box / nsub
+buffersize     = cellsize * nbuff
+dL_box         = dcore_box + 2 * buffersize
+mlatt          = 2.775e11 * (Omx+OmB) * h**2 * (cellsize)**3
+cenx           = 0. # Spatial coordinates of the observer in the lattice 
+ceny           = 0. # for light cone runs, cenx=ceny=cenz=0 for observer at
+cenz           = 0. # lattice centre
+# The largest lightcone runs were done as 8 separate peak patch cagalogues
+# with cenx=ceny=cenz=-boxsize/2 and then stitched together so that each
+# catalogue borms one octant of the sky.
+
+nlx            = ntile # To make a non-cubic box, you can either use a non-
+nly            = ntile # cubic tiling with nlx, nly and nlz not all equal,
+nlz            = ntile # or make non-cubic tiles by with n1, n2 and n3 not
+n1             = nmesh # all equal. Rectangular boxes can be used to get
+n2             = nmesh # a longer line of sight in light-cone runs and make
+n3             = nmesh # small field-of-view Websky maps at high redshift.
+
+
+###########################################################################
+###   Advanced merge_pkvd parameters                                    ###
+###########################################################################
+
+# Lagrangian merging op-codes
+iLexc = 3  # Exclude | 0=None, 1=(D=0), 2=(D<R1-R2), 3=(D<R1), 4=(D<R1+R2) 
+iLmrg = 0  # Merge   | 0=None, 1=BinaryReduceMass 
+
+# Final-state merging op-codes
+iFexc = 0  # Exclude | 0=None 1=(D<f*(R1+R2)) 
+iFmrg = 0  # Merge   | 0=None 1=Link 2=AddMass+mrg 

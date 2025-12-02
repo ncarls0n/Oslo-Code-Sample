@@ -1,0 +1,14 @@
+#define __M2_PHI__ 1.0_dl
+#define __M2_CHI__ 1.0_dl
+#define __PHI_W__ 0.12547_dl
+#define __PHI_P__ 8.49953_dl
+#define __LAMBDA_CHI__ 62500.0_dl
+#define __VEV__ 0.1_dl
+#define __PHI_INIT__ 8.625_dl
+#define __PHI_FIN__ 8.37406_dl
+#define __NSTEP__ 32768
+#define __STEPADAPT__ 1
+#define __DT0__ 0.03125_dl
+#define __NK__ 1000
+#define __DK__ 3.434760_dl
+#define __KMAX__ 3434.769_dl 

@@ -1,0 +1,267 @@
+#----------------------------------------------------------------------
+# DO NOT MODIFY THIS FILE
+#----------------------------------------------------------------------
+
+FFTLIB = -L$(SCINET_FFTW_MPI_ROOT)/lib $(FFTWOMP) -lfftw3f_mpi -lfftw3f
+FFTINC = -I$(SCINET_FFTW_MPI_ROOT)/include
+#FFTLIB = -L$(FFTW_PATH)/lib $(FFTWOMP) -lfftw3f_mpi -lfftw3f
+#FFTINC = -I$(FFTW_PATH)/include 
+
+CCOPTIONS = $(CDEFS) $(CCOPTIMIZE)
+
+# EXTERNAL MODULES
+exdir = ./modules/External
+hpx_mods = \
+	    $(exdir)/healpix_types.o\
+	    $(exdir)/cgetEnvironment.o\
+	    $(exdir)/extension.o\
+	    $(exdir)/long_intrinsic.o\
+	    $(exdir)/misc_utils.o\
+	    $(exdir)/num_rec.o\
+	    $(exdir)/bit_manipulation.o\
+	    $(exdir)/indmed.o\
+	    $(exdir)/statistics.o\
+	    $(exdir)/pix_tools.o\
+	    $(exdir)/fitstools.o\
+	    $(exdir)/head_fits.o 
+
+ex_mods  = $(exdir)/intreal_types.o\
+	 $(exdir)/openmpvars.o\
+	 $(exdir)/mpivars.o\
+	 $(exdir)/textlib.o\
+	 $(exdir)/Type_Kinds.o\
+	 $(exdir)/Endian_Utility.o\
+	 $(exdir)/timing_diagnostics.o\
+	 $(exdir)/myio.o\
+	 $(exdir)/memorytracking.o\
+	 $(exdir)/memory_management.o
+
+# GLOBAL VARIABLES
+gvdir   = ./modules/GlobalVariables
+gv_mods = \
+	$(gvdir)/cosmoparams.o\
+	$(gvdir)/input_parameters.o\
+	$(gvdir)/params.o
+
+# HOMOGENEOUS ELLIPSOID 
+hedir   = ./modules/HomogeneousEllipsoid
+he_mods = $(hedir)/HomogeneousEllipsoid.o
+
+# SOLVERS 
+sldir   = ./modules/Solvers
+sl_mods = $(sldir)/Solvers.o
+
+# RANDOM FIELD
+rfdir   = ./modules/RandomField
+rf_mods  = \
+	$(rfdir)/globalvars.o\
+	$(rfdir)/grid.o\
+	$(rfdir)/fftw_interface.o\
+	$(rfdir)/tiles.o\
+	$(rfdir)/cosmology.o\
+	$(rfdir)/random.o\
+	$(rfdir)/pktable.o\
+	$(rfdir)/gaussian_field.o\
+	$(rfdir)/time.o\
+	$(rfdir)/collapse.o\
+	$(rfdir)/growth.o\
+        $(rfdir)/chi2zeta.o\
+	$(rfdir)/RandomField.o
+
+# SLAB TO CUBE FILES
+scdir = ./modules/SlabToCube
+sc_mods = $(scdir)/SlabToCube.o
+
+# TABLE INTERPOLATION FILES
+tidir = ./modules/TabInterp
+ti_mods = $(tidir)/TabInterp.o
+
+# LINEAR COSMOLOGY DIRECTORY
+cosmodir = ./cosmology
+cosmo_mods = \
+       $(cosmodir)/Dlin_params.o \
+
+# HPKVD MODULE AND OBJECT FILES
+hpdir  = ./hpkvd
+hpkvd_mods = \
+       $(hpdir)/arrays.o \
+       $(hpdir)/io.o 
+
+hpkvd_objs = \
+       $(hpdir)/peakvoidsubs.o \
+       $(cosmodir)/psubs_Dlinear.o\
+       $(hpdir)/hpkvd.o
+
+etab_objs = $(hpdir)/run_hom_ellipse_tab.o 	 
+# MERGE_PKVD MODULE AND OBJECT FILES
+mgdir  = ./merge_pkvd
+merge_mods = \
+	$(mgdir)/sort2.o\
+	$(mgdir)/arrays_params.o\
+	$(mgdir)/exclusion.o
+
+merge_objs = \
+	$(cosmodir)/psubs_Dlinear.o\
+	$(mgdir)/merge_pkvd.o
+
+# PKS2MAP MODULE AND OBJECT FILES
+pmdir  = ./pks2map/
+p2m_mods = \
+	 $(pmdir)/profiles.o\
+	 $(exdir)/mpivars.o\
+	 $(exdir)/textlib.o\
+	 $(rfdir)/random.o\
+	 $(pmdir)/healpixvars.o\
+	 $(pmdir)/flatskyvars.o\
+	 $(pmdir)/fitsvars.o\
+	 $(pmdir)/cosmology.o\
+	 $(pmdir)/bbps_profile.o\
+         $(pmdir)/line_profile.o\
+	 $(pmdir)/integrate_profiles.o\
+	 $(pmdir)/maptable.o\
+	 $(pmdir)/haloproject.o\
+	 $(pmdir)/pksc.o
+
+p2m_objs = $(pmdir)/pks2map.o 	 
+
+# PKS2CMB MODULE AND OBJECT FILES
+pcdir  = ./pks2cmb/
+p2c_mods = \
+	 $(pcdir)/profiles.o\
+	 $(exdir)/mpivars.o\
+	 $(exdir)/textlib.o\
+	 $(rfdir)/random.o\
+	 $(pcdir)/healpixvars.o\
+	 $(pcdir)/flatskyvars.o\
+	 $(pcdir)/fitsvars.o\
+	 $(pcdir)/cosmology.o\
+	 $(pcdir)/bbps_profile.o\
+         $(pcdir)/line_profile.o\
+	 $(pcdir)/integrate_profiles.o\
+	 $(pcdir)/maptable.o\
+	 $(pcdir)/haloproject.o\
+	 $(pcdir)/pksc.o
+
+p2c_objs = $(pcdir)/pks2cmb.o 	 
+
+mmtm_mods = \
+	 $(exdir)/textlib.o\
+	 $(pmdir)/cosmology.o\
+	 $(pmdir)/profiles.o\
+	 $(pmdir)/bbps_profile.o\
+	 $(pmdir)/integrate_profiles.o\
+	 $(pmdir)/maptable.o
+
+mmtm_objs = $(pmdir)/make_maptable.o
+
+mmtc_mods = \
+	 $(exdir)/textlib.o\
+	 $(pcdir)/cosmology.o\
+	 $(pcdir)/profiles.o\
+	 $(pcdir)/bbps_profile.o\
+	 $(pcdir)/integrate_profiles.o\
+	 $(pcdir)/maptable.o
+
+mmtc_objs = $(pcdir)/make_maptable.o
+
+moddir = ./modules/
+bindir = ../bin
+
+OPTIONS       =  $(OPTIMIZE) $(FFTLIB) $(FFTINC) $(MODFLAG)$(moddir) $(OMPLIB)
+OPTIONS_MERGE =  $(OPTIMIZE) $(MODFLAG)$(moddir)
+
+EXEC_h = hpkvd
+OBJS_h = $(ex_mods) $(gv_mods) $(sl_mods) $(he_mods) $(rf_mods) $(sc_mods)\
+       $(ti_mods) $(hpkvd_mods) $(cosmo_mods) $(hpkvd_objs) 
+
+EXEC_m = merge_pkvd
+OBJS_m = $(ex_mods) $(gv_mods) $(merge_mods) $(cosmo_mods) $(merge_objs)
+
+EXEC_t = make_maptable
+OBJS_t = $(mmtm_mods) $(mmtm_objs)
+
+EXEC_c = make_cmbtable
+OBJS_c = $(mmtc_mods) $(mmtc_objs)
+
+EXEC_pm = pks2map
+OBJS_pm = $(hpx_mods) $(p2m_mods) $(p2m_objs)
+
+EXEC_pc = pks2cmb
+OBJS_pc = $(hpx_mods) $(p2c_mods) $(p2c_objs)
+
+.SUFFIXES: .o .f .f90 .F90 .c .C
+
+$(gvdir)/%.o: $(gvdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(hedir)/%.o: $(hedir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(sldir)/%.o: $(sldir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(scdir)/%.o: $(scdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(tidir)/%.o: $(tidir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(rfdir)/%.o: $(rfdir)/%.f
+	$(F77) $(OPTIONS) -c $< -o $@
+$(rfdir)/%.o: $(rfdir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(mgdir)/%.o: $(mgdir)/%.f90
+	$(F90) $(OPTIONS) -c $< -o $@
+$(mgdir)/%.o: $(mgdir)/%.F90
+	$(F90) $(OPTIONS) -c $< -o $@
+
+$(exdir)/%.o: $(exdir)/%.F90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(exdir)/%.o: $(exdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(exdir)/%.o: $(exdir)/%.c
+	$(CC)  $(CCOPTIONS) -c $< -o $@
+$(exdir)/%.o: $(exdir)/%.C
+	$(CXX)  $(CCOPTIONS) -c $< -o $@
+
+$(cosmodir)/%.o: $(cosmodir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+
+$(hpdir)/%.o: $(hpdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(hpdir)/%.o: $(hpdir)/%.C 
+	$(CXX)  $(OPTIONS) -c $< -o $@
+
+$(pmdir)/%.o: $(pmdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(pmdir)/%.o: $(pmdir)/%.C 
+	$(CXX)  $(OPTIONS) -c $< -o $@
+
+$(pcdir)/%.o: $(pcdir)/%.f90 
+	$(F90) $(OPTIONS) -c $< -o $@
+$(pcdir)/%.o: $(pcdir)/%.C 
+	$(CXX)  $(OPTIONS) -c $< -o $@
+
+$(mgdir)/%.o: $(mgdir)/%.f90 
+	$(F90) $(OPTIONS_MERGE) -c $< -o $@
+$(mgdir)/%.o: $(mgdir)/%.f
+	$(F90) $(OPTIONS_MERGE) -c $< -o $@
+
+$(EXEC_h): $(OBJS_h) 
+	$(F90) $(OPTIONS) $(OBJS_h) $(FFTLIB) -o  $(bindir)/$(EXEC_h)  
+$(EXEC_m): $(OBJS_m) 
+	$(F90) $(OPTIONS) $(OBJS_m) -o  $(bindir)/$(EXEC_m)
+$(EXEC_t): $(OBJS_t) 
+	$(F90) $(OPTIONS) $(OBJS_t) -lm -o  $(bindir)/$(EXEC_t)  
+$(EXEC_c): $(OBJS_c) 
+	$(F90) $(OPTIONS) $(OBJS_c) -lm -o  $(bindir)/$(EXEC_c)  
+$(EXEC_pm): $(OBJS_pm) 
+	$(F90) $(OPTIONS) $(OBJS_pm) -L$(CFITSIO_LIBDIR) -lm -lcfitsio -o\
+	$(bindir)/$(EXEC_pm)  
+$(EXEC_pc): $(OBJS_pc) 
+	$(F90) $(OPTIONS) $(OBJS_pc) -L$(CFITSIO_LIBDIR) -lm -lcfitsio -o\
+	$(bindir)/$(EXEC_pc)  
+
+EXEC = $(bindir)/$(EXEC_h) $(bindir)/$(EXEC_m) \
+       $(bindir)/$(EXEC_t) $(bindir)/$(EXEC_pm) $(bindir)/$(EXEC_pc)
+OBJS = $(OBJS_h) $(OBJS_m) $(OBJS_t) $(OBJS_pm) $(OBJS_pc)
+
+clean:
+	rm -f $(EXEC) $(OBJS) $(moddir)/*.mod $(sldir)/*.o $(rfdir)/*.o $(cosmodir)/*.o $(hpdir)/*.o\
+	      $(mgdir)/*.o $(exdir)/*.o $(scdir)/*.o $(tidir)/*.o 
+
